@@ -34,11 +34,7 @@ for student in students:
 
 # Handle unassigned students
 for student in unassigned_students:
-    for mentor_id, mentor in mentors.items():
-        if mentor["count"] < MAX_STUDENTS:
-            pairings.append([student["id"], mentor_id])
-            mentors[mentor_id]["count"] += 1
-            break
+    pairings.append([student["id"], "unassigned"])
 
 # Output pairings
 with open("data/pairings.csv", "w") as f:
