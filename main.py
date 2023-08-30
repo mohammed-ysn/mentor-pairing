@@ -1,6 +1,6 @@
 import csv
 
-max_students = 5
+MAX_STUDENTS = 5
 
 # Read mentors and add student count
 mentors = {}
@@ -24,7 +24,7 @@ unassigned_students = []
 for student in students:
     assigned = False
     for mentor_id, mentor in mentors.items():
-        if mentor["count"] < max_students and mentor["career"] == student["interest"]:
+        if mentor["count"] < MAX_STUDENTS and mentor["career"] == student["interest"]:
             pairings.append([student["id"], mentor_id])
             mentors[mentor_id]["count"] += 1
             assigned = True
@@ -35,7 +35,7 @@ for student in students:
 # Handle unassigned students
 for student in unassigned_students:
     for mentor_id, mentor in mentors.items():
-        if mentor["count"] < max_students:
+        if mentor["count"] < MAX_STUDENTS:
             pairings.append([student["id"], mentor_id])
             mentors[mentor_id]["count"] += 1
             break
