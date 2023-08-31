@@ -19,6 +19,10 @@ repos:
     hooks:
       - id: flake8
         args: ["--ignore=E501"]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.2.0
+    hooks:
+      - id: mypy
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.2
     hooks:
