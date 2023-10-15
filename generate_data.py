@@ -1,8 +1,13 @@
 import os
 import csv
+import shutil
 
 
-def gen():
+def reset(data_path):
+    if os.path.exists(data_path):
+        shutil.rmtree(data_path)
+    os.makedirs(data_path)
+
     # Define the data for mentors and students
     mentors_data = [
         [1, "Engineering"],
@@ -11,6 +16,7 @@ def gen():
         [4, "Engineering"],
         [5, "Medicine"],
         [6, "Computer Science"],
+        [7, "Education"],
     ]
 
     students_data = [
@@ -24,6 +30,7 @@ def gen():
         [108, "Engineering"],
         [109, "Engineering"],
         [110, "Medicine"],
+        [111, "Business"],
     ]
 
     # Create the 'data' directory if it doesn't exist

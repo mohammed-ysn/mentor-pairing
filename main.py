@@ -1,44 +1,15 @@
 import csv
-from queue import PriorityQueue
 import generate_data
+import student
+import mentor
 
 # Maximum students per mentor
 MAX_STUDENTS = 5
 
-# Map mentor id to a dict with career strand and count of students
-mentors: dict[str, dict[str, int | str]] = {}
-# Map career strand to a priority queue of mentors
-# Priority is based on the number of students assigned to the mentor
-mentor_queues: dict[str, PriorityQueue[tuple[int, str]]] = {}
+generate_data.reset("data")
 
-# Generate sample data
-generate_data.gen()
-
-with open("data/mentors.csv") as f:
-    reader = csv.reader(f)
-    for row in reader:
-        mentor_id: str
-        mentor_career: str
-        mentor_id, mentor_career = row
-
-        mentors[mentor_id] = {"career": mentor_career, "count": 0}
-
-        if mentor_career not in mentor_queues:
-            mentor_queues[mentor_career] = PriorityQueue()
-
-        mentor_queues[mentor_career].put((0, mentor_id))
-
-# List of students with their id and career interest
-students: list[dict[str, str]] = []
-
-with open("data/students.csv") as f:
-    reader = csv.reader(f)
-    for row in reader:
-        student_id: str
-        career_interest: str
-        student_id, career_interest = row
-
-        students.append({"id": student_id, "interest": career_interest})
+students = student.read("data/students.csv")
+mentors, mentor_queues = mentor.read("data/mentors.csv")
 
 # Pair students and mentors
 pairings: list[list[str]] = [["Student ID", "Mentor ID", "Career Strand"]]
