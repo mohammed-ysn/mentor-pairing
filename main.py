@@ -1,12 +1,18 @@
 import csv
 from queue import PriorityQueue
+import generate_data
 
+# Maximum students per mentor
 MAX_STUDENTS = 5
 
-# Read mentors and add to priority queues
+# Map mentor id to a dict with career strand and count of students
 mentors: dict[str, dict[str, int | str]] = {}
+# Map career strand to a priority queue of mentors
+# Priority is based on the number of students assigned to the mentor
 mentor_queues: dict[str, PriorityQueue[tuple[int, str]]] = {}
 
+# Generate sample data
+generate_data.gen()
 
 with open("data/mentors.csv") as f:
     reader = csv.reader(f)
@@ -22,7 +28,7 @@ with open("data/mentors.csv") as f:
 
         mentor_queues[mentor_career].put((0, mentor_id))
 
-# Read students
+# List of students with their id and career interest
 students: list[dict[str, str]] = []
 
 with open("data/students.csv") as f:
@@ -35,7 +41,7 @@ with open("data/students.csv") as f:
         students.append({"id": student_id, "interest": career_interest})
 
 # Pair students and mentors
-pairings: list[list[str]] = []
+pairings: list[list[str]] = [["Student ID", "Mentor ID", "Career Strand"]]
 unassigned_students: list[dict[str, str]] = []
 
 for student in students:
@@ -64,3 +70,5 @@ for student in unassigned_students:
 with open("data/pairings.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(pairings)
+
+print("Pairing complete")
