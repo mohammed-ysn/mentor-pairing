@@ -1,26 +1,50 @@
 import csv
-from queue import PriorityQueue
+from dataclasses import dataclass, field
+from itertools import count
+from typing import Set
+
+
+@dataclass
+class Mentor:
+    id_generator = count(1)
+
+    id: int
+    full_name: str
+    email: str
+    industry: str
+    max_students: int
+    help_type: Set[str] = field(default_factory=set)
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        if not isinstance(other, Mentor):
+            return False
+        return self.id == other.id
 
 
 def read(path):
-    # Map mentor id to a dict with career strand and count of students
-    mentors: dict[str, dict[str, int | str]] = {}
-    # Map career strand to a priority queue of mentors
-    # Priority is based on the number of students assigned to the mentor
-    mentor_queues: dict[str, PriorityQueue[tuple[int, str]]] = {}
-
     with open(path) as f:
-        reader = csv.reader(f)
+        reader = csv.DictReader(f)
+        mentors = set()
         for row in reader:
-            mentor_id: str
-            mentor_career: str
-            mentor_id, mentor_career = row
+            mentor = Mentor(
+                id=next(Mentor.id_generator),
+                full_name=row["Full name"],
+                email=row["Email address"],
+                industry=row["Industry"],
+                help_type=parse_help_type(
+                    row["Types of career help you would like to provide"]
+                ),
+                max_students=int(
+                    row["How many students would you be willing to mentor?"]
+                ),
+            )
+            mentors.add(mentor)
 
-            mentors[mentor_id] = {"career": mentor_career, "count": 0}
+    return mentors
 
-            if mentor_career not in mentor_queues:
-                mentor_queues[mentor_career] = PriorityQueue()
 
-            mentor_queues[mentor_career].put((0, mentor_id))
-
-    return mentors, mentor_queues
+def parse_help_type(help_type):
+    return set(help_type.split(";"))

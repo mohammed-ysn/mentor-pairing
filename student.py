@@ -1,17 +1,46 @@
 import csv
+from dataclasses import dataclass, field
+from itertools import count
+from typing import Set
+
+
+@dataclass
+class Student:
+    id_generator = count(1)
+
+    id: int
+    full_name: str
+    email: str
+    interest: str
+    help_type: Set[str] = field(default_factory=set)
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        if not isinstance(other, Student):
+            return False
+        return self.id == other.id
 
 
 def read(path):
-    # List of students with their id and career interest
-    students: list[dict[str, str]] = []
-
     with open(path) as f:
-        reader = csv.reader(f)
+        reader = csv.DictReader(f)
+        students = set()
         for row in reader:
-            student_id: str
-            career_interest: str
-            student_id, career_interest = row
-
-            students.append({"id": student_id, "interest": career_interest})
+            student = Student(
+                id=next(Student.id_generator),
+                full_name=row["Full name"],
+                email=row["Username"],
+                interest=row["Desired industry"],
+                help_type=parse_help_type(
+                    row["What types of support are you seeking from alumni?"]
+                ),
+            )
+            students.add(student)
 
     return students
+
+
+def parse_help_type(help_type):
+    return set(help_type.split(";"))

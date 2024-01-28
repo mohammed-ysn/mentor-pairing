@@ -1,45 +1,55 @@
 import csv
-import generate_data
-import student
-import mentor
+from heapq import heappop, heappush
 
-# Maximum students per mentor
-MAX_STUDENTS = 5
+from mentor import read as read_mentors
+from student import read as read_students
 
-generate_data.reset("data")
 
-students = student.read("data/students.csv")
-mentors, mentor_queues = mentor.read("data/mentors.csv")
+def pair_students_with_mentors(students, mentors):
+    pairings = {}
+    unassigned_students = set(students)
+    mentor_queue = []
 
-# Pair students and mentors
-pairings: list[list[str]] = [["Student ID", "Mentor ID", "Career Strand"]]
-unassigned_students: list[dict[str, str]] = []
+    # Initialise the mentor queue based on max_students
+    for mentor in mentors:
+        heappush(mentor_queue, (mentor.max_students, mentor))
 
-for student in students:
-    assigned = False
+    # Iterate through students and pair them with mentors
+    for student in students:
+        while mentor_queue:
+            max_students, mentor = heappop(mentor_queue)
+            if (
+                max_students > 0
+                and student.interest == mentor.industry
+                # Check that student and mentor have at least one help type in common
+                and student.help_type & mentor.help_type
+            ):
+                pairings[student] = mentor
+                mentor.max_students -= 1
+                unassigned_students.remove(student)
+                heappush(mentor_queue, (mentor.max_students, mentor))
+                break
 
-    if student["interest"] in mentor_queues:
-        min_mentor: str = mentor_queues[student["interest"]].get()[1]
+    return pairings, unassigned_students
 
-        count = int(mentors[min_mentor]["count"])
-        if count < MAX_STUDENTS:
-            pairings.append([student["id"], min_mentor, student["interest"]])
-            updated_count = count + 1
-            mentors[min_mentor]["count"] = updated_count
-            assigned = True
 
-            mentor_queues[student["interest"]].put((updated_count, min_mentor))
+if __name__ == "__main__":
+    students = read_students("data/students.csv")
+    mentors = read_mentors("data/mentors.csv")
 
-    if not assigned:
-        unassigned_students.append(student)
+    pairings, unassigned_students = pair_students_with_mentors(students, mentors)
 
-# Handle unassigned students
-for student in unassigned_students:
-    pairings.append([student["id"], "unassigned", student["interest"]])
+    # Output pairings to csv
+    with open("data/pairings.csv", "w") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Student", "Mentor"])
+        for student, mentor in pairings.items():
+            writer.writerow([student.full_name, mentor.full_name])
 
-# Output pairings
-with open("data/pairings.csv", "w") as f:
-    writer = csv.writer(f)
-    writer.writerows(pairings)
+    print("Pairing complete")
 
-print("Pairing complete")
+    # Handle unassigned students if needed
+    if unassigned_students:
+        print("Unassigned students:")
+        for student in unassigned_students:
+            print(student.full_name)
