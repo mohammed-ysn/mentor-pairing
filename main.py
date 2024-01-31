@@ -42,7 +42,7 @@ def pair_students_with_mentors(students, mentors):
                 pairings[student] = mentor
                 mentor.current_num_students += 1
                 unassigned_students.remove(student)
-                unassigned_mentors.remove(mentor)
+                unassigned_mentors.discard(mentor)
 
                 # Push the mentor back into the queue if they can take more students
                 if mentor.current_num_students < mentor.max_students:
