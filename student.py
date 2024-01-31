@@ -30,9 +30,9 @@ def read(path):
         for row in reader:
             student = Student(
                 id=next(Student.id_generator),
-                full_name=row["Full name"],
-                email=row["Username"],
-                interest=row["Desired industry"],
+                full_name=row["Full name"].strip(),
+                email=row["Username"].strip(),
+                interest=row["Desired industry"].strip(),
                 help_type=parse_help_type(
                     row["What types of support are you seeking from alumni?"]
                 ),
@@ -43,4 +43,5 @@ def read(path):
 
 
 def parse_help_type(help_type):
-    return set(help_type.split(";"))
+    help_types = help_type.split(";")
+    return {ht.strip() for ht in help_types}

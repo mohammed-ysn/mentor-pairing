@@ -14,6 +14,7 @@ class Mentor:
     industry: str
     max_students: int
     help_type: Set[str] = field(default_factory=set)
+    current_num_students: int = 0
 
     def __hash__(self):
         return hash(self.id)
@@ -31,9 +32,9 @@ def read(path):
         for row in reader:
             mentor = Mentor(
                 id=next(Mentor.id_generator),
-                full_name=row["Full name"],
-                email=row["Email address"],
-                industry=row["Industry"],
+                full_name=row["Full name"].strip(),
+                email=row["Email address"].strip(),
+                industry=row["Industry"].strip(),
                 help_type=parse_help_type(
                     row["Types of career help you would like to provide"]
                 ),
@@ -47,4 +48,5 @@ def read(path):
 
 
 def parse_help_type(help_type):
-    return set(help_type.split(";"))
+    help_types = help_type.split(";")
+    return {ht.strip() for ht in help_types}
