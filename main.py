@@ -1,8 +1,7 @@
 import csv
 from heapq import heappop, heappush
 
-from mentor import read as read_mentors
-from student import read as read_students
+from participant import read_participants
 
 
 def pair_students_with_mentors(students, mentors):
@@ -59,8 +58,8 @@ def custom_cmp(mentor):
 
 
 if __name__ == "__main__":
-    students = read_students("data/students.csv")
-    mentors = read_mentors("data/mentors.csv")
+    students = read_participants("data/students.csv", "student")
+    mentors = read_participants("data/mentors.csv", "mentor")
 
     pairings, unassigned_students, unassigned_mentors = pair_students_with_mentors(
         students, mentors
