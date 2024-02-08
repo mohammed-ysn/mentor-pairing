@@ -1,5 +1,8 @@
 import csv
+import random
+import string
 from dataclasses import dataclass, field
+from heapq import heappop, heappush
 from itertools import count
 from typing import Set
 
@@ -76,3 +79,115 @@ def read_participants(path, participant_type):
 def parse_help_type(help_type):
     help_types = help_type.split(";")
     return {ht.strip() for ht in help_types}
+
+
+def pair_students_with_mentors(students, mentors):
+    pairings = {}
+    unassigned_students = set(students)
+    unassigned_mentors = set(mentors)
+
+    all_industries = set(
+        [student.interest for student in students]
+        + [mentor.industry for mentor in mentors]
+    )
+    # Queue for every industry
+    # Key: industry
+    # Value: priority queue of mentors
+    mentor_queues = {
+        # Initialise empty queues for each industry
+        industry: []
+        for industry in all_industries
+    }
+
+    # Populate queues with mentors
+    for mentor in mentors:
+        heappush(mentor_queues[mentor.industry], (custom_cmp(mentor), mentor))
+
+    # Iterate through students and pair them with mentors
+    for student in students:
+        # Get the queue for the student's industry
+        mentor_queue = mentor_queues[student.interest]
+
+        # Iterate through the queue until a mentor is found
+        while mentor_queue:
+            (_, mentor) = heappop(mentor_queue)
+            if (
+                student.interest == mentor.industry
+                # Check that student and mentor have at least one help type in common
+                and student.help_type & mentor.help_type
+            ):
+                pairings[student] = mentor
+                mentor.current_num_students += 1
+                unassigned_students.remove(student)
+                unassigned_mentors.discard(mentor)
+
+                # Push the mentor back into the queue if they can take more students
+                if mentor.current_num_students < mentor.max_students:
+                    heappush(mentor_queue, (custom_cmp(mentor), mentor))
+
+                break
+
+    return pairings, unassigned_students, unassigned_mentors
+
+
+def custom_cmp(mentor):
+    return (mentor.current_num_students, mentor.id)
+
+
+INDUSTRIES = (
+    "Business/Consulting",
+    "Technology",
+    "Engineering",
+    "Finance/Accounting",
+    "Law",
+    "Healthcare",
+    "Education",
+    "Sciences/Research",
+    "Government/Public Policy",
+)
+HELP_TYPES = (
+    "Career advice",
+    "CV review",
+    "Mock interviews",
+    "Internship or job shadowing",
+)
+
+
+def generate_random_students(num_students):
+    students = set()
+    for i in range(num_students):
+        students.add(
+            Student(
+                id=next(Student.id_generator),
+                full_name=f"Student {i}",
+                email=generate_random_email(),
+                interest=random.choice(INDUSTRIES),
+                help_type=set(random.sample(HELP_TYPES, random.randint(1, 4))),
+            )
+        )
+    return students
+
+
+def generate_random_mentors(num_mentors):
+    mentors = set()
+    for i in range(num_mentors):
+        mentors.add(
+            Mentor(
+                id=next(Mentor.id_generator),
+                full_name=f"Mentor {i}",
+                email=generate_random_email(),
+                industry=random.choice(INDUSTRIES),
+                help_type=set(random.sample(HELP_TYPES, random.randint(1, 4))),
+                max_students=random.randint(1, 5),
+            )
+        )
+    return mentors
+
+
+def generate_random_email():
+    domains = ["gmail.com", "yahoo.com", "hotmail.com", "aol.com"]
+    username = "".join(
+        random.choices(string.ascii_lowercase + string.digits, k=random.randint(5, 10))
+    )
+    domain = random.choice(domains)
+    return f"{username}@{domain}"

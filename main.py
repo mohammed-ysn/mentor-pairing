@@ -1,61 +1,6 @@
 import csv
-from heapq import heappop, heappush
 
-from participant import read_participants
-
-
-def pair_students_with_mentors(students, mentors):
-    pairings = {}
-    unassigned_students = set(students)
-    unassigned_mentors = set(mentors)
-
-    all_industries = set(
-        [student.interest for student in students]
-        + [mentor.industry for mentor in mentors]
-    )
-    # Queue for every industry
-    # Key: industry
-    # Value: priority queue of mentors
-    mentor_queues = {
-        # Initialise empty queues for each industry
-        industry: []
-        for industry in all_industries
-    }
-
-    # Populate queues with mentors
-    for mentor in mentors:
-        heappush(mentor_queues[mentor.industry], (custom_cmp(mentor), mentor))
-
-    # Iterate through students and pair them with mentors
-    for student in students:
-        # Get the queue for the student's industry
-        mentor_queue = mentor_queues[student.interest]
-
-        # Iterate through the queue until a mentor is found
-        while mentor_queue:
-            (_, mentor) = heappop(mentor_queue)
-            if (
-                student.interest == mentor.industry
-                # Check that student and mentor have at least one help type in common
-                and student.help_type & mentor.help_type
-            ):
-                pairings[student] = mentor
-                mentor.current_num_students += 1
-                unassigned_students.remove(student)
-                unassigned_mentors.discard(mentor)
-
-                # Push the mentor back into the queue if they can take more students
-                if mentor.current_num_students < mentor.max_students:
-                    heappush(mentor_queue, (custom_cmp(mentor), mentor))
-
-                break
-
-    return pairings, unassigned_students, unassigned_mentors
-
-
-def custom_cmp(mentor):
-    return (mentor.current_num_students, mentor.id)
-
+from participant import pair_students_with_mentors, read_participants
 
 if __name__ == "__main__":
     students = read_participants("data/students.csv", "student")
