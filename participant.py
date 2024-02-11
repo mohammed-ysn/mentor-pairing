@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from heapq import heappop, heappush
 from itertools import count
 from typing import Set
+from collections import defaultdict
 
 
 @dataclass
@@ -86,18 +87,8 @@ def pair_students_with_mentors(students, mentors):
     unassigned_students = set(students)
     unassigned_mentors = set(mentors)
 
-    all_industries = set(
-        [student.interest for student in students]
-        + [mentor.industry for mentor in mentors]
-    )
-    # Queue for every industry
-    # Key: industry
-    # Value: priority queue of mentors
-    mentor_queues = {
-        # Initialise empty queues for each industry
-        industry: []
-        for industry in all_industries
-    }
+    # Key: industry, Value: priority queue of mentors
+    mentor_queues = defaultdict(list)
 
     # Populate queues with mentors
     for mentor in mentors:
