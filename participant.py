@@ -159,7 +159,7 @@ def generate_random_students(num_students):
         students.add(
             Student(
                 id=next(Student.id_generator),
-                full_name=f"Student {i}",
+                full_name=f"Student {i+1}",
                 email=generate_random_email(),
                 interest=random.choice(INDUSTRIES),
                 help_type=set(
@@ -176,7 +176,7 @@ def generate_random_mentors(num_mentors):
         mentors.add(
             Mentor(
                 id=next(Mentor.id_generator),
-                full_name=f"Mentor {i}",
+                full_name=f"Mentor {i+1}",
                 email=generate_random_email(),
                 industry=random.choice(INDUSTRIES),
                 help_type=set(
