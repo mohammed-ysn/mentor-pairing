@@ -26,3 +26,17 @@ if unassigned_mentors:
     print("Unassigned mentors:")
     for mentor in unassigned_mentors:
         print(f"{mentor.full_name} ({mentor.industry}) [help: {mentor.help_type}]")
+
+# Print capacity filled
+print()
+print("Capacity filled:")
+for mentor in mentors:
+    print(
+        f"{mentor.full_name} ({mentor.industry}) - {mentor.current_num_students}/{mentor.max_students}"
+    )
+print(
+    "Total capacity filled:",
+    sum(mentor.current_num_students for mentor in mentors),
+    "/",
+    sum(mentor.max_students for mentor in mentors),
+)
