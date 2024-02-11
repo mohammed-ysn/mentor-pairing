@@ -19,10 +19,10 @@ if unassigned_students:
     print()
     print("Unassigned students:")
     for student in unassigned_students:
-        print(f"{student.full_name} ({student.interest})")
+        print(f"{student.full_name} ({student.interest}) [help: {student.help_type}]")
 
 if unassigned_mentors:
     print()
     print("Unassigned mentors:")
     for mentor in unassigned_mentors:
-        print(f"{mentor.full_name} ({mentor.industry})")
+        print(f"{mentor.full_name} ({mentor.industry}) [help: {mentor.help_type}]")
