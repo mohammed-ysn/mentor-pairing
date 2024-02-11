@@ -162,7 +162,7 @@ def generate_random_students(num_students):
                 full_name=f"Student {i}",
                 email=generate_random_email(),
                 interest=random.choice(INDUSTRIES),
-                help_type=set(random.sample(HELP_TYPES, random.randint(1, 4))),
+                help_type=set(random.sample(HELP_TYPES, random.randint(1, len(HELP_TYPES)))),
             )
         )
     return students
@@ -177,7 +177,7 @@ def generate_random_mentors(num_mentors):
                 full_name=f"Mentor {i}",
                 email=generate_random_email(),
                 industry=random.choice(INDUSTRIES),
-                help_type=set(random.sample(HELP_TYPES, random.randint(1, 4))),
+                help_type=set(random.sample(HELP_TYPES, random.randint(1, len(HELP_TYPES)))),
                 max_students=random.randint(1, 5),
             )
         )
