@@ -108,6 +108,9 @@ def pair_students_with_mentors(students, mentors):
         # Get the queue for the student's industry
         mentor_queue = mentor_queues[student.interest]
 
+        # Temporarily store mentors that are unsuitable for the student
+        unsuitable_mentors = []
+
         # Iterate through the queue until a mentor is found
         while mentor_queue:
             (_, mentor) = heappop(mentor_queue)
@@ -126,6 +129,13 @@ def pair_students_with_mentors(students, mentors):
                     heappush(mentor_queue, (custom_cmp(mentor), mentor))
 
                 break
+
+            # If the mentor is unsuitable, temporarily store them to be added back to the queue
+            unsuitable_mentors.append(mentor)
+
+        # Add the unsuitable mentors back into the queue
+        for mentor in unsuitable_mentors:
+            heappush(mentor_queue, (custom_cmp(mentor), mentor))
 
     return pairings, unassigned_students, unassigned_mentors
 
