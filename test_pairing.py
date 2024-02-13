@@ -3,22 +3,11 @@ import string
 
 from participant import Mentor, Student, pair_students_with_mentors
 
-INDUSTRIES = (
-    "Business/Consulting",
-    "Technology",
-    "Engineering",
-    "Finance/Accounting",
-    "Law",
-    "Healthcare",
-    "Education",
-    "Sciences/Research",
-    "Government/Public Policy",
-)
-HELP_TYPES = (
-    "Career advice and CV review",
-    "Mock interviews",
-    "Internship or job shadowing",
-)
+with open("industries.txt", "r") as f:
+    INDUSTRIES = tuple(line.strip() for line in f)
+
+with open("help_types.txt", "r") as f:
+    HELP_TYPES = tuple(line.strip() for line in f)
 
 
 def generate_random_students(num_students):
