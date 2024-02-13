@@ -4,10 +4,10 @@ import string
 from participant import Mentor, Student, pair_students_with_mentors
 
 with open("industries.txt", "r") as f:
-    INDUSTRIES = tuple(line.strip() for line in f)
+    industries = tuple(line.strip() for line in f)
 
 with open("help_types.txt", "r") as f:
-    HELP_TYPES = tuple(line.strip() for line in f)
+    help_types = tuple(line.strip() for line in f)
 
 
 def generate_random_students(num_students):
@@ -18,9 +18,9 @@ def generate_random_students(num_students):
                 id=next(Student.id_generator),
                 full_name=f"Student {i+1}",
                 email=generate_random_email(),
-                interest=random.choice(INDUSTRIES),
+                interest=random.choice(industries),
                 help_type=set(
-                    random.sample(HELP_TYPES, random.randint(1, len(HELP_TYPES)))
+                    random.sample(help_types, random.randint(1, len(help_types)))
                 ),
             )
         )
@@ -35,9 +35,9 @@ def generate_random_mentors(num_mentors):
                 id=next(Mentor.id_generator),
                 full_name=f"Mentor {i+1}",
                 email=generate_random_email(),
-                industry=random.choice(INDUSTRIES),
+                industry=random.choice(industries),
                 help_type=set(
-                    random.sample(HELP_TYPES, random.randint(1, len(HELP_TYPES)))
+                    random.sample(help_types, random.randint(1, len(help_types)))
                 ),
                 max_students=random.randint(1, 5),
             )
