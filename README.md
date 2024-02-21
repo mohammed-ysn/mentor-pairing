@@ -2,14 +2,14 @@
 
 This program, developed for the Cambridge University Islamic Society, pairs students with mentors based on various criteria such as industry interest and types of support sought.
 
-### Prerequisites
+## Prerequisites
 
 - Python 3.x
 - CSV files containing participant data:
   - `students.csv`: Information about students.
   - `mentors.csv`: Information about mentors.
 
-### Instructions
+## Instructions
 
 1. **Prepare Data Files**:
    - Ensure that you have the following CSV files in the `data/` directory:
@@ -28,18 +28,18 @@ This program, developed for the Cambridge University Islamic Society, pairs stud
 5. **Handle Unassigned Participants**:
    - If any students or mentors remain unassigned, the script displays their details separately.
 
-### Running the Script
+## Running the Script
 
 ```bash
 python main.py
 ```
 
-### Output
+## Output
 
 - The script generates pairings.csv in the data/ directory.
 - Pairing details are also displayed in the console.
 - Information about unassigned students or mentors is provided if applicable.
 
-### Note
+## Note
 - Ensure that the CSV files (students.csv and mentors.csv) are correctly formatted and accessible to the script.
 - For additional assistance or inquiries, please contact the script author.
