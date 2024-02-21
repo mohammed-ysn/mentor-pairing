@@ -45,7 +45,7 @@ class Mentor(Participant):
 def read_participants(path, participant_type):
     with open(path) as f:
         reader = csv.DictReader(f)
-        participants = set()
+        participants = []
         for row in reader:
             if participant_type == "student":
                 participant = Student(
@@ -70,7 +70,7 @@ def read_participants(path, participant_type):
                         row["How many students would you be willing to mentor?"]
                     ),
                 )
-            participants.add(participant)
+            participants.append(participant)
 
     return participants
 

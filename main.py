@@ -1,6 +1,7 @@
-import copy
 import csv
 import os
+import copy
+import random
 
 from participant import pair_students_with_mentors, read_participants
 
@@ -21,6 +22,10 @@ if __name__ == "__main__":
     for _ in range(10):
         students = copy.deepcopy(students_original)
         mentors = copy.deepcopy(mentors_original)
+
+        # Shuffle the order of students and mentors
+        random.shuffle(students)
+        random.shuffle(mentors)
 
         pairings, unassigned_students, unassigned_mentors = pair_students_with_mentors(
             students, mentors
