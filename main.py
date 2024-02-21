@@ -1,17 +1,24 @@
 import csv
+import os
 
 from participant import pair_students_with_mentors, read_participants
 
 if __name__ == "__main__":
-    students = read_participants("data/students.csv", "student")
-    mentors = read_participants("data/mentors.csv", "mentor")
+    script_dir = os.path.dirname(__file__)
+
+    students_path = os.path.join(script_dir, "data", "students.csv")
+    mentors_path = os.path.join(script_dir, "data", "mentors.csv")
+    pairings_path = os.path.join(script_dir, "data", "pairings.csv")
+
+    students = read_participants(students_path, "student")
+    mentors = read_participants(mentors_path, "mentor")
 
     pairings, unassigned_students, unassigned_mentors = pair_students_with_mentors(
         students, mentors
     )
 
     # Output pairings to csv
-    with open("data/pairings.csv", "w") as f:
+    with open(pairings_path, "w") as f:
         writer = csv.writer(f)
         writer.writerow(
             ["Student", "Mentor", "Industry", "Student Email", "Mentor Email"]
