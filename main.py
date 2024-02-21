@@ -1,3 +1,4 @@
+import copy
 import csv
 import os
 
@@ -10,12 +11,27 @@ if __name__ == "__main__":
     mentors_path = os.path.join(script_dir, "data", "mentors.csv")
     pairings_path = os.path.join(script_dir, "data", "pairings.csv")
 
-    students = read_participants(students_path, "student")
-    mentors = read_participants(mentors_path, "mentor")
+    students_original = read_participants(students_path, "student")
+    mentors_original = read_participants(mentors_path, "mentor")
 
-    pairings, unassigned_students, unassigned_mentors = pair_students_with_mentors(
-        students, mentors
-    )
+    max_pairings = 0
+    best_pairings = None
+
+    # Run the pairing process multiple times
+    for _ in range(10):
+        students = copy.deepcopy(students_original)
+        mentors = copy.deepcopy(mentors_original)
+
+        pairings, unassigned_students, unassigned_mentors = pair_students_with_mentors(
+            students, mentors
+        )
+
+        print(f"Current pairings: {len(pairings)}")
+
+        # Check if the current pairing has more assignments
+        if len(pairings) > max_pairings:
+            max_pairings = len(pairings)
+            best_pairings = pairings
 
     # Output pairings to csv
     with open(pairings_path, "w") as f:
@@ -23,7 +39,7 @@ if __name__ == "__main__":
         writer.writerow(
             ["Student", "Mentor", "Industry", "Student Email", "Mentor Email"]
         )
-        for student, mentor in pairings.items():
+        for student, mentor in best_pairings.items():
             writer.writerow(
                 [
                     student.full_name,
@@ -37,7 +53,7 @@ if __name__ == "__main__":
     print("Pairing complete (see data/pairings.csv)")
 
     # Print the pairings
-    for student, mentor in pairings.items():
+    for student, mentor in best_pairings.items():
         print(
             f"S: '{student.full_name}' M:'{mentor.full_name}' IND: '{mentor.industry}'"
         )
