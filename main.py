@@ -2,10 +2,21 @@ import csv
 import os
 import copy
 import random
+import argparse
 
 from participant import pair_students_with_mentors, read_participants
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run pairing simulation")
+    parser.add_argument(
+        "-i",
+        "--iterations",
+        type=int,
+        default=10,
+        help="Number of iterations for the pairing simulation (default: 10)",
+    )
+    args = parser.parse_args()
+
     script_dir = os.path.dirname(__file__)
 
     students_path = os.path.join(script_dir, "data", "students.csv")
@@ -19,7 +30,7 @@ if __name__ == "__main__":
     best_pairings = None
 
     # Run the pairing process multiple times
-    for _ in range(10):
+    for _ in range(args.iterations):
         students = copy.deepcopy(students_original)
         mentors = copy.deepcopy(mentors_original)
 
